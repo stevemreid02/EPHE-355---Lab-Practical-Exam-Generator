@@ -100,10 +100,32 @@ const LabPracticalGenerator = () => {
 const palMuscle1 = allMuscles[Math.floor(Math.random() * allMuscles.length)];
 const palMuscle2 = allMuscles.filter(m => m !== palMuscle1)[Math.floor(Math.random() * (allMuscles.length - 1))];
 
-// Assign one to stretch, the other to strength (randomly swapped)
-const [stretchMuscle, strengthMuscle] = Math.random() < 0.5
-  ? [palMuscle1, palMuscle2]
-  : [palMuscle2, palMuscle1];
+// Check what each muscle is capable of
+const m1CanStretch = muscleBank[palMuscle1].stretch;
+const m1CanStrengthen = muscleBank[palMuscle1].strength;
+const m2CanStretch = muscleBank[palMuscle2].stretch;
+const m2CanStrengthen = muscleBank[palMuscle2].strength;
+
+let stretchMuscle, strengthMuscle;
+
+if (m1CanStretch && m2CanStrengthen && m2CanStretch && m1CanStrengthen) {
+  // Both muscles can do both — randomly assign
+  [stretchMuscle, strengthMuscle] = Math.random() < 0.5
+    ? [palMuscle1, palMuscle2]
+    : [palMuscle2, palMuscle1];
+} else if (m1CanStretch && m2CanStrengthen) {
+  stretchMuscle = palMuscle1;
+  strengthMuscle = palMuscle2;
+} else if (m2CanStretch && m1CanStrengthen) {
+  stretchMuscle = palMuscle2;
+  strengthMuscle = palMuscle1;
+} else {
+  // No valid combo from these two — fall back to original logic
+  const stretchPool = allMuscles.filter(m => muscleBank[m].stretch);
+  stretchMuscle = stretchPool[Math.floor(Math.random() * stretchPool.length)];
+  const strengthPool = allMuscles.filter(m => muscleBank[m].strength && m !== stretchMuscle);
+  strengthMuscle = strengthPool[Math.floor(Math.random() * strengthPool.length)];
+}
     
     // Get palpation points
     const points = [];
