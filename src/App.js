@@ -96,16 +96,14 @@ const LabPracticalGenerator = () => {
   const generatePractical = () => {
     const allMuscles = Object.keys(muscleBank);
     
-    // Get stretch and strength muscles (guaranteed different)
-    const stretchPool = allMuscles.filter(m => muscleBank[m].stretch);
-    const stretchMuscle = stretchPool[Math.floor(Math.random() * stretchPool.length)];
-    
-    const strengthPool = allMuscles.filter(m => muscleBank[m].strength && m !== stretchMuscle);
-    const strengthMuscle = strengthPool[Math.floor(Math.random() * strengthPool.length)];
-    
-    // Get random palpation muscles
-    const palMuscle1 = allMuscles[Math.floor(Math.random() * allMuscles.length)];
-    const palMuscle2 = allMuscles.filter(m => m !== palMuscle1)[Math.floor(Math.random() * (allMuscles.length - 1))];
+   // Get random palpation muscles FIRST
+const palMuscle1 = allMuscles[Math.floor(Math.random() * allMuscles.length)];
+const palMuscle2 = allMuscles.filter(m => m !== palMuscle1)[Math.floor(Math.random() * (allMuscles.length - 1))];
+
+// Assign one to stretch, the other to strength (randomly swapped)
+const [stretchMuscle, strengthMuscle] = Math.random() < 0.5
+  ? [palMuscle1, palMuscle2]
+  : [palMuscle2, palMuscle1];
     
     // Get palpation points
     const points = [];
